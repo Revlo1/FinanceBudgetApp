@@ -4,7 +4,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitClient {
-    // The base URL structure for ExchangeRate-API includes the API key
+    //base URL for exchange rate API
     private const val BASE_URL = "https://v6.exchangerate-api.com/v6/"
 
     val currencyApiService: CurrencyApiService by lazy {

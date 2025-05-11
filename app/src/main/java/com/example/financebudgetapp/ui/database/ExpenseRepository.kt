@@ -1,11 +1,10 @@
 package com.example.financebudgetapp.ui.database
 
 import androidx.annotation.WorkerThread
-import kotlinx.coroutines.flow.Flow // Import Flow
+import kotlinx.coroutines.flow.Flow
 
 class ExpenseRepository(private val expenseItemDao: ExpenseDao) {
 
-    // Expose the data as a Flow from the DAO
     val allExpenses: Flow<List<ExpenseItem>> = expenseItemDao.getAllExpensesFlow() // Assuming you have getAllExpensesFlow() in your DAO
 
     @WorkerThread

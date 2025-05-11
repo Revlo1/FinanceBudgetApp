@@ -1,7 +1,6 @@
-// ui.currency.CurrencyDisplay.kt
+
 package com.example.financebudgetapp.ui
 
-import androidx.compose.foundation.gestures.forEach
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -25,13 +24,12 @@ import java.text.DecimalFormat
 @Composable
 fun CurrencyDisplay(
     modifier: Modifier = Modifier,
-    // Pass the CurrencyViewModel as a parameter
     currencyViewModel: CurrencyViewModel = viewModel(
         factory = CurrencyViewModelFactory(CurrencyRepository(RetrofitClient.currencyApiService))
     ),
-    // Pass the amount to be converted and displayed
+
     amount: Double,
-    label: String // Label for the amount (e.g., "Total Spent:", "Budget:")
+    label: String
 ) {
     val selectedBaseCurrency by currencyViewModel.selectedBaseCurrency.collectAsState()
     val availableCurrencies by currencyViewModel.availableCurrencies.collectAsState()
@@ -39,12 +37,10 @@ fun CurrencyDisplay(
 
     val decimalFormat = remember { DecimalFormat("0.00") }
 
-    // Function to convert amount to the selected base currency
     fun convertToSelectedCurrency(amount: Double): Double {
         return when (exchangeRatesResult) {
             is Result.Success -> {
                 val exchangeRates = (exchangeRatesResult as Result.Success).data.conversionRates
-                // Assuming your original data is in GBP and API base is USD (adjust as needed)
                 val rateFromGBP = exchangeRates["GBP"]
                 val rateToSelected = exchangeRates[selectedBaseCurrency]
 
@@ -53,10 +49,10 @@ fun CurrencyDisplay(
                 } else if (selectedBaseCurrency == "GBP") {
                     amount
                 } else {
-                    amount // Default to original if conversion fails
+                    amount
                 }
             }
-            else -> amount // Default to original if rates not loaded
+            else -> amount
         }
     }
 
@@ -75,7 +71,7 @@ fun CurrencyDisplay(
         ) {
             Text(text = label, fontWeight = FontWeight.Bold)
 
-            // Currency Selection Dropdown
+            //currency selection dropdown box
             ExposedDropdownMenuBox(
                 expanded = expanded,
                 onExpandedChange = { expanded = !expanded }

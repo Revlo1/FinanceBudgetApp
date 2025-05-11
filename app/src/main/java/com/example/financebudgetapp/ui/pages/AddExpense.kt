@@ -31,7 +31,6 @@ import com.example.financebudgetapp.ui.database.ExpenseItemModelFactory // Impor
 @Composable
 fun AddExpenseScreen(
     modifier: Modifier = Modifier,
-    // Obtain the ViewModel using viewModel() and your factory
     expenseViewModel: ExpenseViewModel = viewModel(factory = ExpenseItemModelFactory())
 ) {
     var expenseName by remember { mutableStateOf("") }
@@ -79,10 +78,9 @@ fun AddExpenseScreen(
                 if (expenseName.isNotEmpty() && expenseAmount.isNotEmpty()) {
                     val amountDouble = expenseAmount.toDoubleOrNull()
                     if (amountDouble != null) {
-                        // Call the ViewModel function to add the expense
+
                         expenseViewModel.addExpenseItem(expenseName, amountDouble)
 
-                        // Clear the input fields after saving
                         expenseName = ""
                         expenseAmount = ""
                     }

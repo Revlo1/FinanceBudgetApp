@@ -19,11 +19,11 @@ class ExpenseViewModel(private val repository: ExpenseRepository): ViewModel() {
 
     val totalSpent: StateFlow<Double> =
         allExpenses
-            .map { expenses -> expenses.sumOf { it.amount } } // Sum the amount of each expense
+            .map { expenses -> expenses.sumOf { it.amount } }
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(5000),
-                initialValue = 0.0 // Initial total is 0.0
+                initialValue = 0.0
             )
 
     fun addExpenseItem(name: String, amount: Double) = viewModelScope.launch {
@@ -31,24 +31,14 @@ class ExpenseViewModel(private val repository: ExpenseRepository): ViewModel() {
         repository.insertExpense(expense)
     }
 
+    /* //for adding an update expense feature
     fun updateExpenseItem(expense: ExpenseItem) = viewModelScope.launch {
         repository.updateExpense(expense)
     }
+    */
 
     fun deleteExpenseById(expenseId: Int) = viewModelScope.launch {
         repository.deleteExpenseById(expenseId)
     }
 
 }
-/*
-class ExpenseItemModelFactory(private val repository: ExpenseRepository): ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        Log.d("Factory", "Creating ExpenseViewModel")
-        if (modelClass.isAssignableFrom(ExpenseViewModel::class.java))
-            @Suppress("UNCHECKED_CAST")
-            return ExpenseViewModel(repository) as T
-        throw IllegalArgumentException("Error: Unknown Class")
-    }
-}
-
-*/

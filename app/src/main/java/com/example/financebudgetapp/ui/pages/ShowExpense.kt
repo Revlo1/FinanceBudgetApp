@@ -23,11 +23,9 @@ import com.example.financebudgetapp.ui.database.ExpenseViewModel
 import com.example.financebudgetapp.ui.database.ExpenseItemModelFactory
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
-import java.util.Date // Import Date
 import java.util.Locale
-import java.util.Calendar // Import Calendar
+import java.util.Calendar
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ShowExpenseScreen(
     modifier: Modifier = Modifier,
@@ -40,25 +38,21 @@ fun ShowExpenseScreen(
     val decimalFormat = remember { DecimalFormat("0.00") }
     val formattedTotal = decimalFormat.format(totalSpent)
 
-    // Group expenses by day
     val groupedExpenses = remember(expenses) {
         expenses.groupBy { expense ->
-            // Get the date part of the expense date
             val calendar = Calendar.getInstance()
             calendar.time = expense.date
             calendar.set(Calendar.HOUR_OF_DAY, 0)
             calendar.set(Calendar.MINUTE, 0)
             calendar.set(Calendar.SECOND, 0)
             calendar.set(Calendar.MILLISECOND, 0)
-            calendar.time // Use the date without time for grouping
+            calendar.time
         }
     }
 
-    // Format for displaying the day header (Day, Month in text, Year)
-    val dayFormat = remember { SimpleDateFormat("dd MMMM yyyy", Locale.getDefault()) } // Changed pattern
+    val dayFormat = remember { SimpleDateFormat("dd MMMM yyyy", Locale.getDefault()) }
 
     Scaffold(
-        // topBar is removed
         content = { paddingValues ->
             Box(
                 modifier = modifier
@@ -79,18 +73,15 @@ fun ShowExpenseScreen(
                         modifier = Modifier.padding(bottom = 16.dp)
                     )
 
-                    // Removed the text label for date format
 
                     LazyColumn(
                         modifier = Modifier.fillMaxSize(),
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        // Iterate through the grouped expenses (Map<Date, List<ExpenseItem>>)
                         groupedExpenses.forEach { (date, expensesForDay) ->
-                            // Add a header for the day
                             item {
                                 Text(
-                                    text = dayFormat.format(date), // Format and display the date
+                                    text = dayFormat.format(date),
                                     fontSize = 20.sp,
                                     fontWeight = FontWeight.Bold,
                                     color = Color.White,
@@ -98,7 +89,6 @@ fun ShowExpenseScreen(
                                 )
                             }
 
-                            // Add the expense items for this day
                             items(
                                 items = expensesForDay,
                                 key = { expense -> expense.id }
@@ -120,18 +110,17 @@ fun ShowExpenseScreen(
                     }
                 }
 
-                // Explicitly place the FloatingActionButton at the bottom end
                 if (selectedExpenseIds.isNotEmpty()) {
                     FloatingActionButton(
                         onClick = {
                             selectedExpenseIds.forEach { id ->
                                 expenseViewModel.deleteExpenseById(id)
                             }
-                            selectedExpenseIds = emptySet() // Clear selection after deletion
+                            selectedExpenseIds = emptySet()
                         },
                         modifier = Modifier
-                            .align(Alignment.BottomEnd) // Align to the bottom end of the Box
-                            .padding(16.dp) // Add some padding
+                            .align(Alignment.BottomEnd)
+                            .padding(16.dp)
                     ) {
                         Icon(Icons.Filled.Delete, contentDescription = "Delete selected")
                     }
@@ -150,9 +139,8 @@ fun ExpenseItemComposable(
     val decimalFormat = remember { DecimalFormat("0.00") }
     val formattedAmount = decimalFormat.format(expense.amount)
 
-    // Date format for displaying only the time
-    val timeFormat = remember { SimpleDateFormat("HH:mm", Locale.getDefault()) } // Changed pattern to "HH:mm"
-    val formattedTime = timeFormat.format(expense.date) // Format the date to time
+    val timeFormat = remember { SimpleDateFormat("HH:mm", Locale.getDefault()) }
+    val formattedTime = timeFormat.format(expense.date)
 
     Card(
         modifier = Modifier
@@ -173,7 +161,7 @@ fun ExpenseItemComposable(
             Column(modifier = Modifier.weight(1f)) {
                 Text(text = "Name: ${expense.name}", fontWeight = FontWeight.Bold)
                 Text(text = "Amount: £$formattedAmount")
-                Text(text = "Time: $formattedTime") // Display the formatted time
+                Text(text = "Time: $formattedTime")
             }
         }
     }

@@ -21,25 +21,22 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.financebudgetapp.R
-import com.example.financebudgetapp.api.RetrofitClient // Import RetrofitClient
-import com.example.financebudgetapp.api.CurrencyRepository // Import CurrencyRepository
-import com.example.financebudgetapp.ui.CurrencyDisplay // Import CurrencyDisplay
-import com.example.financebudgetapp.api.CurrencyViewModel // Import CurrencyViewModel
-import com.example.financebudgetapp.api.CurrencyViewModelFactory // Import CurrencyViewModelFactory
+import com.example.financebudgetapp.api.RetrofitClient
+import com.example.financebudgetapp.api.CurrencyRepository
+import com.example.financebudgetapp.ui.CurrencyDisplay
+import com.example.financebudgetapp.api.CurrencyViewModel
+import com.example.financebudgetapp.api.CurrencyViewModelFactory
 import com.example.financebudgetapp.ui.database.ExpenseViewModel
 import com.example.financebudgetapp.ui.database.BudgetViewModel
 import com.example.financebudgetapp.ui.database.ExpenseItemModelFactory
 import com.example.financebudgetapp.widget.BudgetWidgetProvider
 import java.text.DecimalFormat
-import kotlin.text.format
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
     expenseViewModel: ExpenseViewModel = viewModel(factory = ExpenseItemModelFactory()),
     budgetViewModel: BudgetViewModel = viewModel(),
-    // Get the CurrencyViewModel here as well
     currencyViewModel: CurrencyViewModel = viewModel(
         factory = CurrencyViewModelFactory(CurrencyRepository(RetrofitClient.currencyApiService))
     )
@@ -49,7 +46,6 @@ fun HomeScreen(
     var showBudgetDialog by remember { mutableStateOf(false) }
     var budgetInput by remember { mutableStateOf("") }
 
-    // State to control the visibility of the CurrencyDisplay
     var showCurrencyDisplay by remember { mutableStateOf(false) }
 
     val decimalFormat = remember { DecimalFormat("0.00") }
@@ -131,15 +127,12 @@ fun HomeScreen(
 
         Spacer(modifier = Modifier.weight(1f))
 
-        // Button to toggle CurrencyDisplay visibility
         Button(onClick = { showCurrencyDisplay = !showCurrencyDisplay }) {
             Text(if (showCurrencyDisplay) "Hide Currency Converter" else "Show Currency Converter")
         }
 
-        // Conditionally display the CurrencyDisplay Composable
         if (showCurrencyDisplay) {
-            // You can choose which value to display in the CurrencyDisplay
-            // For example, display the Total Spent in the selected currency
+
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 elevation = CardDefaults.cardElevation(4.dp)
@@ -147,13 +140,11 @@ fun HomeScreen(
                 Column(modifier = Modifier.padding(16.dp)) {
                     CurrencyDisplay(
                         currencyViewModel = currencyViewModel,
-                        amount = totalSpent, // Pass the amount you want to convert
-                        label = "Total Spent (Converted):" // Label for the converted amount
+                        amount = totalSpent,
+                        label = "Total Spent (Converted):"
                     )
                 }
             }
-            // You could add more CurrencyDisplay instances for Budget or Remaining if needed
-            // Card(...) { Column(...) { CurrencyDisplay(...) } }
         }
 
 
@@ -164,8 +155,8 @@ fun HomeScreen(
             Text("Set/Edit Budget")
         }
     }
-    val context = LocalContext.current // Get context here (e.g., from a LocalContext.current)
-    // Budget Setting Dialog
+    val context = LocalContext.current
+
     if (showBudgetDialog) {
         AlertDialog(
             onDismissRequest = { showBudgetDialog = false },
@@ -186,16 +177,14 @@ fun HomeScreen(
                     budgetViewModel.updateBudget(newBudget)
                     showBudgetDialog = false
 
-                    // Save the new budget to SharedPreferences
 
                     val sharedPreferences = context.getSharedPreferences("FinancePrefs", Context.MODE_PRIVATE)
                     with(sharedPreferences.edit()) {
-                        putFloat("budget", newBudget.toFloat()) // Save the budget as a Float
+                        putFloat("budget", newBudget.toFloat())
                         putFloat("total_spent", totalSpent.toFloat())
-                        apply() // Use apply() for asynchronous saving
+                        apply()
                     }
 
-                    // Trigger widget update after saving
                     val appWidgetManager = AppWidgetManager.getInstance(context)
                     val componentName = ComponentName(context, BudgetWidgetProvider::class.java)
                     val appWidgetIds = appWidgetManager.getAppWidgetIds(componentName)

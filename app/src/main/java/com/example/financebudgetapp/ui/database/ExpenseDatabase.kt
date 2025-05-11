@@ -6,7 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 
-@Database(entities = [ExpenseItem::class], version = 2, exportSchema = false) // Increment version
+@Database(entities = [ExpenseItem::class], version = 2, exportSchema = false)
 @TypeConverters(DateConverter::class)
 abstract class ExpenseDatabase : RoomDatabase() {
 
@@ -23,7 +23,7 @@ abstract class ExpenseDatabase : RoomDatabase() {
                     ExpenseDatabase::class.java,
                     "expense_database"
                 )
-                    .fallbackToDestructiveMigration(false) // Add this line
+                    .fallbackToDestructiveMigration(false)
                     .build()
                 INSTANCE = instance
                 instance
